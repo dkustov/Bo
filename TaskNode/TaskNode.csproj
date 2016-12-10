@@ -53,11 +53,11 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="IdGeneration\IdGenerator.cs" />
-    <Compile Include="IdGeneration\IIdGenerator.cs" />
-    <Compile Include="INodesFactory.cs" />
+    <Compile Include="NodesCreation\IdGenerator.cs" />
+    <Compile Include="NodesCreation\IIdGenerator.cs" />
+    <Compile Include="NodesCreation\INodesFactory.cs" />
     <Compile Include="Node.cs" />
-    <Compile Include="NodesFactory.cs" />
+    <Compile Include="NodesCreation\NodesFactory.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

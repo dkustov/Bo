@@ -1,4 +1,4 @@
-﻿namespace TaskNode.IdGeneration
+﻿namespace TaskNode.NodesCreation
 {
     public class IntIdGenerator : IIdGenerator
     {

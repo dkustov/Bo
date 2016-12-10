@@ -1,4 +1,4 @@
-﻿namespace TaskNode
+﻿namespace TaskNode.NodesCreation
 {
     public interface INodesFactory
     {
