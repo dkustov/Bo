@@ -58,6 +58,11 @@
     <Compile Include="NodesCreation\INodesFactory.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="NodesCreation\NodesFactory.cs" />
+    <Compile Include="Parsers\AssignCharAcceptor.cs" />
+    <Compile Include="Parsers\ICharAction.cs" />
+    <Compile Include="Parsers\NameCharAcceptor.cs" />
+    <Compile Include="Parsers\Parser.cs" />
+    <Compile Include="Parsers\ValueCharAcceptor.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
