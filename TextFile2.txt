@@ -1,0 +1,189 @@
+tatic Dictionary<string, string> ParseJson(string res)
+02
+{
+03
+    var lines = res.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+04
+    var ht = new Dictionary<string, string>(20);
+05
+    var st = new Stack<string>(20);
+06
+ 
+07
+    for (int i = 0; i < lines.Length; ++i)
+08
+    {
+09
+        var line = lines[i];
+10
+        var pair = line.Split(":".ToCharArray(), 2, StringSplitOptions.RemoveEmptyEntries);
+11
+ 
+12
+        if (pair.Length == 2)
+13
+        {
+14
+            var key = ClearString(pair[0]);
+15
+            var val = ClearString(pair[1]);
+16
+ 
+17
+            if (val == "{")
+18
+            {
+19
+                st.Push(key);
+20
+            }
+21
+            else
+22
+            {
+23
+                if (st.Count > 0)
+24
+                {
+25
+                    key = string.Join("_", st) + "_" + key;
+26
+                }
+27
+ 
+28
+                if (ht.ContainsKey(key))
+29
+                {
+30
+                    ht[key] += "&" + val;
+31
+                }
+32
+                else
+33
+                {
+34
+                    ht.Add(key, val);
+35
+                }
+36
+            }
+37
+        }
+38
+        else if (line.IndexOf('}') != -1 && st.Count > 0)
+39
+        {
+40
+            st.Pop();
+41
+        }
+42
+    }
+43
+ 
+44
+    return ht;
+45
+}
+46
+ 
+47
+static string ClearString(string str)
+48
+{
+49
+    str = str.Trim();
+50
+ 
+51
+    var ind0 = str.IndexOf("\"");
+52
+    var ind1 = str.LastIndexOf("\"");
+53
+     
+54
+    if (ind0 != -1 && ind1 != -1)
+55
+    {
+56
+        str = str.Substring(ind0 + 1, ind1 - ind0 - 1);
+57
+    }
+58
+    else if (str[str.Length-1] == ',')
+59
+    {
+60
+        str = str.Substring(0, str.Length - 1);
+61
+    }
+62
+ 
+63
+    str = HttpUtility.UrlDecode(str);
+64
+ 
+65
+    return str;
+66
+}
+Рассмотрим пример json строка полученная от системы Windows LiveId:
+01
+{
+02
+   "id": "cb6e111111aaaaaa",
+03
+   "name": "Code Tester",
+04
+   "first_name": "Code",
+05
+   "last_name": "Tester",
+06
+   "link": "http://profile.live.com/cid-cb6e111111aaaaaa/",
+07
+   "gender": "male",
+08
+   "emails": {
+09
+      "preferred": "tester@gmail.com",
+10
+      "account": "tester@gmail.com",
+11
+      "personal": null,
+12
+      "business": null
+13
+   },
+14
+   "locale": "en_US",
+15
+   "updated_time": "2012-05-21T21:40:43+0000"
+16
+}
+Превращается в словарь:
+01
+id,                 cb6e111111aaaaaa
+02
+name,               Code Tester
+03
+first_name,         Code
+04
+last_name,          Tester
+05
+link,               http://profile.live.com/cid-cb6e111111aaaaaa/
+06
+gender,             male
+07
+emails_preferred,   tester@gmail.com
+08
+emails_account,     tester@gmail.com
+09
+emails_personal,    null
+10
+emails_business,    null
+11
+locale,             en_US
+12
+updated_time,       2012-05-21T21:40:43+0000

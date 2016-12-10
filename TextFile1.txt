@@ -1,0 +1,108 @@
+class Program
+{
+    static void Main(string[] args)
+    {
+        var s = "\"key\"=\"value\";\"key=1\"=\"value=1\" ;" +
+                " \"   key2\" =\"va\\\\\\\"lue2\"";
+        var dict = new SimpleTokenizer(s)
+                        .GetTokens()
+                        .SplitByToken(";")
+                        .Select(ParseTerm)
+                        .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        var res = dict["key"];
+    }
+
+    static KeyValuePair<string, string> ParseTerm(IEnumerable<string> term)
+    {
+        using (var it = term.GetEnumerator())
+        {
+            if (!it.MoveNext()) // no first token => error
+                throw new ArgumentException("term format wrong");
+            var key = it.Current; // key is first token
+            if (!it.MoveNext() || it.Current != "=") // second token must be "="
+                throw new ArgumentException("term format wrong");
+            if (!it.MoveNext()) // no third token => error
+                throw new ArgumentException("term format wrong");
+            var value = it.Current; // value is third token
+            if (it.MoveNext()) // trailing tokens => error
+                throw new ArgumentException("term format wrong");
+            return new KeyValuePair<string, string>(key, value);
+        }
+    }
+}
+
+class SimpleTokenizer
+{
+    string source;
+    public SimpleTokenizer(string source) { this.source = source; }
+
+    public IEnumerable<string> GetTokens()
+    {
+        StringBuilder quotedString = null;
+        bool escapeMode = false;
+        foreach (var c in source)
+        {
+            if (quotedString == null)
+            {
+                if (char.IsWhiteSpace(c)) // ignoring whitespace in normal mode
+                    continue;
+                if (c == '"') // starting quote mode
+                    quotedString = new StringBuilder();
+                else
+                    yield return c.ToString();
+            }
+            else if (escapeMode)
+            {
+                if (c == '\\' || c == '"')
+                    quotedString.Append(c);
+                else
+                    throw new ArgumentException("invalid escape: \\" + c);
+                escapeMode = false;
+            }
+            else // pure quote mode
+            {
+                if (c == '"') // leaving quote mode
+                {
+                    yield return quotedString.ToString();
+                    quotedString = null;
+                }
+                else if (c == '\\')
+                {
+                    escapeMode = true;
+                }
+                else
+                {
+                    quotedString.Append(c);
+                }
+            }
+        }
+        if (escapeMode)
+            throw new ArgumentException(
+                "unexpected input stream end after escape character");
+        if (quotedString != null)
+            throw new ArgumentException(
+                "unexpected input stream end in quoted string");
+    }
+}
+
+static class TokenUtils
+{
+    public static IEnumerable<IEnumerable<string>> SplitByToken(
+        this IEnumerable<string> list, string token)
+    {
+        List<string> currentPart = new List<string>();
+        foreach (var t in list)
+        {
+            if (t == token)
+            {
+                yield return currentPart;
+                currentPart = new List<string>();
+            }
+            else
+            {
+                currentPart.Add(t);
+            }
+        }
+        yield return currentPart;
+    }
+}
