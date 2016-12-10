@@ -6,11 +6,13 @@ using System.Text;
 
 namespace TaskNode
 {
-    class Node
+    public class Node
     {
+        public readonly string Id;
+
         public String Name;
         public String Value;
-        public int Id;               //Нужно следить за Id
+        
         public Node Parent;
         public bool IsValidate;
         public List<Node> ChildList;
@@ -26,11 +28,11 @@ namespace TaskNode
         }
 
 
-        public Node()
+        public Node(string id)
         {
             Name = "";
             Value = "";
-            Id = -1;
+            Id = id;
             Parent = null;
             ChildList = new List<Node>();
             IsValidate = false;

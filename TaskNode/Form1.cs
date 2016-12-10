@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using TaskNode.IdGeneration;
 
 namespace TaskNode
 {
@@ -31,7 +32,9 @@ namespace TaskNode
 
         private void button1_Click( object sender, EventArgs e )
         {
-            treeNode = new Node();
+            INodesFactory nodesFactory = new NodesFactory(new IntIdGenerator());
+
+            treeNode = nodesFactory.CreateNode();
             try
             {
                 if ( openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK )
@@ -39,12 +42,12 @@ namespace TaskNode
                     fileName = openFileDialog1.FileName;
                     using ( System.IO.StreamReader file = new System.IO.StreamReader( fileName, Encoding.Default ) )
                     {
-                        int Id = 0;
+                        
                         eParseMode ParseMode = eParseMode.SearchNameStart;
                         string currentName = String.Empty;
                         string currentValue = String.Empty;
                         Node currentNode;
-                        treeNode.Id = 0;
+                        
                         currentNode = treeNode;
                         bool needCreateNode = false;
                         bool IsMustBeEqualy = false;
@@ -72,9 +75,8 @@ namespace TaskNode
                                     //Это начало имени
                                     if ( needCreateNode )
                                     {
-                                        currentNode.Parent.AddChild( new Node () );
+                                        currentNode.Parent.AddChild( nodesFactory.CreateNode() );
                                         currentNode = currentNode.Parent.ChildList.Last();
-                                        currentNode.Id = Id++;
                                         needCreateNode = false;
                                     }
                                     ParseMode = eParseMode.SearchNameStop;
@@ -116,9 +118,8 @@ namespace TaskNode
                                     }
                                     if ( c.Equals( '{' ) )
                                     {
-                                        currentNode.AddChild( new Node() );
+                                        currentNode.AddChild( nodesFactory.CreateNode());
                                         currentNode = currentNode.ChildList.Last();
-                                        currentNode.Id = Id++;
                                         ParseMode = eParseMode.SearchNameStart;
                                     }
                                     continue;
