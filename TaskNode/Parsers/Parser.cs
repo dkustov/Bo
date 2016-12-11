@@ -2,21 +2,36 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TaskNode.ParseModes;
+using TaskNode.Parsers;
+using TaskNode.NodesCreation;
 
 namespace TaskNode.Parsers
 {
     public class Parser
     {
-        private List<ICharAction> Parsers { get; }
+        List<ICharAction> _Parsers;
 
-        public Parser()
+        public List<ICharAction> Parsers
+        {
+            get
+            {
+                return _Parsers;
+            }
+            set
+            {
+                if ( _Parsers == value )
+                    return;
+                _Parsers = value;
+            }
+        }
+
+        public Parser( Node n, INodesFactory nf )
         {
             Parsers = new List<ICharAction>()
             {
-                new NameCharAcceptor(),
-                new AssignCharAcceptor(),
-                new ValueCharAcceptor()
+                new NameCharAcceptor( n, nf ),
+                new AssignCharAcceptor( n, nf ),
+                new ValueCharAcceptor( n, nf)
             };
         }
 
@@ -25,7 +40,7 @@ namespace TaskNode.Parsers
         {
             get
             {
-                if (_currentParserEnumerator == null)
+                if ( _currentParserEnumerator == null )
                 {
                     _currentParserEnumerator = Parsers.GetEnumerator();
                     _currentParserEnumerator.MoveNext();
@@ -33,8 +48,7 @@ namespace TaskNode.Parsers
                 return _currentParserEnumerator;
             }
         }
-        
-        
+                
         public bool ReceiveChar(char ch)
         {
             if (!CurrentParserEnumerator.Current.Accept(ch))

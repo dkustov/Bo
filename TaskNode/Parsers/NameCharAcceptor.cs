@@ -4,24 +4,36 @@ using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using TaskNode.Parsers;
+using TaskNode.NodesCreation;
 
-namespace TaskNode.ParseModes
+namespace TaskNode.Parsers
 {
     public class NameCharAcceptor: ICharAction
     {
         private const string AllowedFirstCharacters = "_abcdefghijklmnopqrstuvwxyzABCDEFGGIJKLMNOPQRSTUVWXYZ";
         private const string AllowedNextCharacters = "_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGGIJKLMNOPQRSTUVWXYZ";
+        private INodesFactory nodesFactory;
 
-        public Node CurrentNode { get; set; }
+
+        public Node currentNode { get; set; }
+
+        public NameCharAcceptor( Node n, INodesFactory nf )
+        {
+            currentNode = n;
+            nodesFactory = nf;
+        }
+
+
+
 
         private string NodeName
         {
-            get { return CurrentNode?.Name; }
+            get { return currentNode.Name; }
             set
             {
-                if(CurrentNode == null)
+                if(currentNode == null)
                     throw new Exception("Ошибка алгоритма - нет текущего узла");
-                CurrentNode.Name = value;
+                currentNode.Name = value;
             }
         }
 
@@ -37,7 +49,7 @@ namespace TaskNode.ParseModes
 
         private bool CanSkip(char ch)
         {
-            return !NodeName.Any() && char.IsWhiteSpace(ch) || char.IsControl(ch);
+            return !NodeName.Any() && (char.IsWhiteSpace(ch) || char.IsControl(ch));
         }
 
         private bool CanAccept(char ch)

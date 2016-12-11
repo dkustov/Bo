@@ -7,7 +7,7 @@
             IdGenerator = idGenerator;
         }
 
-        private IIdGenerator IdGenerator { get; }
+        private IIdGenerator IdGenerator {get; set;}
 
         
         public Node CreateNode()

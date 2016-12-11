@@ -63,7 +63,6 @@
     <Compile Include="Parsers\NameCharAcceptor.cs" />
     <Compile Include="Parsers\Parser.cs" />
     <Compile Include="Parsers\ValueCharAcceptor.cs" />
-    <Compile Include="Parser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">

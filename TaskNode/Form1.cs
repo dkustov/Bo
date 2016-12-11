@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using TaskNode.NodesCreation;
+using TaskNode.Parsers;
 
 namespace TaskNode
 {
@@ -33,16 +34,41 @@ namespace TaskNode
         private void button1_Click( object sender, EventArgs e )
         {
             INodesFactory nodesFactory = new NodesFactory(new IntIdGenerator());
-
             treeNode = nodesFactory.CreateNode();
+            Parser pars = new Parser( treeNode, nodesFactory );
+            pars.Parsers[0].currentNode = treeNode;
+            pars.Parsers[1].currentNode = treeNode;
+            pars.Parsers[2].currentNode = treeNode;
+
+            int i = 0;
             try
             {
+                /*
+                string line = "sha =     \"val\"";
+                foreach ( char c in line )
+                {
+                    i++;
+                    bool res = pars.ReceiveChar( c );
+                }
+                 */ 
                 if ( openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK )
                 {
                     fileName = openFileDialog1.FileName;
                     using ( System.IO.StreamReader file = new System.IO.StreamReader( fileName, Encoding.Default ) )
                     {
-                        
+                        while ( !file.EndOfStream )
+                        {
+                            string line = file.ReadLine();
+                            foreach ( char c in line )
+                            {
+                                bool res = pars.ReceiveChar( c );
+                            }
+                        }
+                    }
+                }
+
+
+                        /*
                         eParseMode ParseMode = eParseMode.SearchNameStart;
                         string currentName = String.Empty;
                         string currentValue = String.Empty;
@@ -151,7 +177,7 @@ namespace TaskNode
                             }
                         }
                     }
-                }
+                         * */
                 /*
                 if ( treeNode.IsValidate )
                     throw new ArgumentException( "Ошибка разбора" );
