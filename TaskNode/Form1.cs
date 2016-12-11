@@ -36,21 +36,8 @@ namespace TaskNode
             INodesFactory nodesFactory = new NodesFactory(new IntIdGenerator());
             treeNode = nodesFactory.CreateNode();
             Parser pars = new Parser( treeNode, nodesFactory );
-            pars.Parsers[0].CurrentNode = treeNode;
-            pars.Parsers[1].CurrentNode = treeNode;
-            pars.Parsers[2].CurrentNode = treeNode;
-
-            int i = 0;
             try
             {
-                /*
-                string line = "sha =     \"val\"";
-                foreach ( char c in line )
-                {
-                    i++;
-                    bool res = pars.ReceiveChar( c );
-                }
-                 */ 
                 if ( openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK )
                 {
                     fileName = openFileDialog1.FileName;

@@ -12,19 +12,16 @@ namespace TaskNode.Parsers
     {
         private const string AllowedFirstCharacters = "_abcdefghijklmnopqrstuvwxyzABCDEFGGIJKLMNOPQRSTUVWXYZ";
         private const string AllowedNextCharacters = "_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGGIJKLMNOPQRSTUVWXYZ";
-        private INodesFactory nodesFactory;
+        private INodesFactory NodesFactory {get; set;}
 
 
         public Node CurrentNode { get; set; }
 
-        public NameCharAcceptor( Node n, INodesFactory nf )
+        public NameCharAcceptor( Node node, INodesFactory nodesFactory )
         {
-            CurrentNode = n;
-            nodesFactory = nf;
+            CurrentNode = node;
+            NodesFactory = nodesFactory;
         }
-
-
-
 
         private string NodeName
         {

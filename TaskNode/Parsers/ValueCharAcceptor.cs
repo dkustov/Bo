@@ -12,20 +12,8 @@ namespace TaskNode.Parsers
     {
         public Node CurrentNode { get; set; }
         private INodesFactory NodesFactory { get; set; }
-
+        private IValueParser CurrentParser { get; set; }
         private IEnumerable<IValueParser> ValueParsers { get; set; }
-
-        Parser parser;
-        private string nodeValue
-        {
-            get { return CurrentNode.Value; }
-            set
-            {
-                if ( CurrentNode == null )
-                    throw new Exception( "Ошибка алгоритма - нет текущего узла" );
-                CurrentNode.Value = value;
-            }
-        }
 
         public ValueCharAcceptor(Node currentNode, INodesFactory nodesFactory)
         {
@@ -33,13 +21,13 @@ namespace TaskNode.Parsers
             NodesFactory = nodesFactory;
             ValueParsers = new List<IValueParser>()
             {
-                new ObjectValueParser(),
-                new RowValueParser()
+                new ObjectValueParser( currentNode, nodesFactory ),
+                new RowValueParser( currentNode )
             };
         }
 
 
-        public IValueParser CurrentParser { get; set; }
+       
 
         public bool Accept(char ch)
         {
@@ -50,62 +38,6 @@ namespace TaskNode.Parsers
             }
 
             return CurrentParser.AcceptChar(ch);
-
-            
-
-            if ( ObjectMode )
-            {
-                if ( parser == null )
-                    parser = new Parser( CurrentNode, NodesCreation.NodesFactory );
-                bool res = parser.ReceiveChar( ch );
-            }
-                
-            if ( quoteMode )
-            {
-                if ( ch == '"' )
-                {
-                    quoteMode = false;
-                    CurrentNode.Value = nodeValue;
-                    return false;
-                }
-                else
-                {
-                    nodeValue = nodeValue + ch;
-                    return true;
-                }
-            }
-            else
-            {
-                if (ch == '{')
-                {
-
-                    CurrentNode.AddChild( NodesCreation.NodesFactory.CreateNode() );
-                    CurrentNode = CurrentNode.ChildList.Last();
-                    ObjectMode = true;
-                    return true;
-                }
-                if ( ch == '}' )
-                {
-                    if ( CurrentNode.Parent == null )
-                        throw new Exception("лишняя закрывающая скобка");
-                    //treeNode = nodesFactory.CreateNode();
-                    CurrentNode = CurrentNode.Parent;
-                    ObjectMode = false;
-
-                    return false;
-                }
-
-
-                if ( ch == '"' )
-                {
-                    quoteMode = true;
-                }
-            }
-
-
-           //if ( !quoteMode 
-
-            return true;
         }
 
         private bool CheckFirstEmptyChar(char ch)

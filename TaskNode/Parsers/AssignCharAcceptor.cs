@@ -10,13 +10,13 @@ namespace TaskNode.Parsers
     public class AssignCharAcceptor:ICharAction
     {
         public Node CurrentNode { get; set; }
-        public INodesFactory nodesFactory;
+        private INodesFactory NodesFactory;
         private bool SignDetected = false;
 
-        public AssignCharAcceptor( Node n, INodesFactory nf )
+        public AssignCharAcceptor( Node node, INodesFactory nodesFactory )
         {
-            CurrentNode = n;
-            nodesFactory = nf;
+            CurrentNode = node;
+            NodesFactory = nodesFactory;
         }
 
 
@@ -29,7 +29,7 @@ namespace TaskNode.Parsers
                 throw new Exception( "Два знака равно" );
 
             SignDetected = SignDetected || ch == '=' ;
-            return !SignDetected;   //Не будем подрезать за собой
+            return !SignDetected ;   //Не будем подрезать за собой
 
             //return ch == '=' || char.IsWhiteSpace( ch ) || char.IsControl( ch );
              

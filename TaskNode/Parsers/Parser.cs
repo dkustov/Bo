@@ -31,6 +31,7 @@ namespace TaskNode.Parsers
             {
                 new NameCharAcceptor(node, nodesFactory),
                 new AssignCharAcceptor(node, nodesFactory),
+                //Здесь валится
                 new ValueCharAcceptor(node, nodesFactory)
             };
         }
@@ -51,9 +52,11 @@ namespace TaskNode.Parsers
                 
         public bool ReceiveChar(char ch)
         {
+
             if (!CurrentParserEnumerator.Current.Accept(ch))
             {
-                return CurrentParserEnumerator.MoveNext();
+                if ( CurrentParserEnumerator.MoveNext() )
+                    return CurrentParserEnumerator.Current.Accept( ch );
             }
             return true;
         }
