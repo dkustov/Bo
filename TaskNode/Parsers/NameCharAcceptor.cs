@@ -15,11 +15,11 @@ namespace TaskNode.Parsers
         private INodesFactory nodesFactory;
 
 
-        public Node currentNode { get; set; }
+        public Node CurrentNode { get; set; }
 
         public NameCharAcceptor( Node n, INodesFactory nf )
         {
-            currentNode = n;
+            CurrentNode = n;
             nodesFactory = nf;
         }
 
@@ -28,12 +28,12 @@ namespace TaskNode.Parsers
 
         private string NodeName
         {
-            get { return currentNode.Name; }
+            get { return CurrentNode.Name; }
             set
             {
-                if(currentNode == null)
+                if(CurrentNode == null)
                     throw new Exception("Ошибка алгоритма - нет текущего узла");
-                currentNode.Name = value;
+                CurrentNode.Name = value;
             }
         }
 

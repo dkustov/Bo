@@ -60,8 +60,11 @@
     <Compile Include="NodesCreation\NodesFactory.cs" />
     <Compile Include="Parsers\AssignCharAcceptor.cs" />
     <Compile Include="Parsers\ICharAction.cs" />
+    <Compile Include="Parsers\ValueParsers\IValueParser.cs" />
     <Compile Include="Parsers\NameCharAcceptor.cs" />
+    <Compile Include="Parsers\ValueParsers\ObjectValueParser.cs" />
     <Compile Include="Parsers\Parser.cs" />
+    <Compile Include="Parsers\ValueParsers\RowValueParser.cs" />
     <Compile Include="Parsers\ValueCharAcceptor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -87,6 +90,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

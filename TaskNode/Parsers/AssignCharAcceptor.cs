@@ -9,13 +9,13 @@ namespace TaskNode.Parsers
 {
     public class AssignCharAcceptor:ICharAction
     {
-        public Node currentNode { get; set; }
+        public Node CurrentNode { get; set; }
         public INodesFactory nodesFactory;
         private bool SignDetected = false;
 
         public AssignCharAcceptor( Node n, INodesFactory nf )
         {
-            currentNode = n;
+            CurrentNode = n;
             nodesFactory = nf;
         }
 

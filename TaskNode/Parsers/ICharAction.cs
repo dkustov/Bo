@@ -2,7 +2,7 @@
 {
     public interface ICharAction
     {
-        Node currentNode { get; set; }
+        Node CurrentNode { get; set; }
         bool Accept(char ch);
         
     }

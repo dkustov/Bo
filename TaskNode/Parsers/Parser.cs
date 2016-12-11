@@ -17,7 +17,7 @@ namespace TaskNode.Parsers
             {
                 return _Parsers;
             }
-            set
+            private set
             {
                 if ( _Parsers == value )
                     return;
@@ -25,13 +25,13 @@ namespace TaskNode.Parsers
             }
         }
 
-        public Parser( Node n, INodesFactory nf )
+        public Parser(Node node, INodesFactory nodesFactory )
         {
             Parsers = new List<ICharAction>()
             {
-                new NameCharAcceptor( n, nf ),
-                new AssignCharAcceptor( n, nf ),
-                new ValueCharAcceptor( n, nf)
+                new NameCharAcceptor(node, nodesFactory),
+                new AssignCharAcceptor(node, nodesFactory),
+                new ValueCharAcceptor(node, nodesFactory)
             };
         }
 

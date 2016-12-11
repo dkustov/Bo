@@ -36,9 +36,9 @@ namespace TaskNode
             INodesFactory nodesFactory = new NodesFactory(new IntIdGenerator());
             treeNode = nodesFactory.CreateNode();
             Parser pars = new Parser( treeNode, nodesFactory );
-            pars.Parsers[0].currentNode = treeNode;
-            pars.Parsers[1].currentNode = treeNode;
-            pars.Parsers[2].currentNode = treeNode;
+            pars.Parsers[0].CurrentNode = treeNode;
+            pars.Parsers[1].CurrentNode = treeNode;
+            pars.Parsers[2].CurrentNode = treeNode;
 
             int i = 0;
             try

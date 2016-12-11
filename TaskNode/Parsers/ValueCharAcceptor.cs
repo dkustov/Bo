@@ -4,41 +4,59 @@ using System.Linq;
 using System.Text;
 using TaskNode.Parsers;
 using TaskNode.NodesCreation;
+using TaskNode.Parsers.ValueParsers;
 
 namespace TaskNode.Parsers
 {
     public class ValueCharAcceptor: ICharAction
     {
-        public Node currentNode { get; set; }
-        public INodesFactory nodesFactory { get; set; }
-        bool quoteMode = false;
-        bool ObjectMode = false;
+        public Node CurrentNode { get; set; }
+        private INodesFactory NodesFactory { get; set; }
+
+        private IEnumerable<IValueParser> ValueParsers { get; set; }
+
         Parser parser;
         private string nodeValue
         {
-            get { return currentNode.Value; }
+            get { return CurrentNode.Value; }
             set
             {
-                if ( currentNode == null )
+                if ( CurrentNode == null )
                     throw new Exception( "Ошибка алгоритма - нет текущего узла" );
-                currentNode.Value = value;
+                CurrentNode.Value = value;
             }
         }
 
-        public ValueCharAcceptor( Node n, INodesFactory nf )
+        public ValueCharAcceptor(Node currentNode, INodesFactory nodesFactory)
         {
-            currentNode = n;
-            nodesFactory = nf;
+            CurrentNode = currentNode;
+            NodesFactory = nodesFactory;
+            ValueParsers = new List<IValueParser>()
+            {
+                new ObjectValueParser(),
+                new RowValueParser()
+            };
         }
 
 
+        public IValueParser CurrentParser { get; set; }
 
         public bool Accept(char ch)
         {
+            if (CurrentParser == null)
+            {
+                CurrentParser = GetParser(ch);
+                return CurrentParser != null || CheckFirstEmptyChar(ch);
+            }
+
+            return CurrentParser.AcceptChar(ch);
+
+            
+
             if ( ObjectMode )
             {
                 if ( parser == null )
-                    parser = new Parser( currentNode, nodesFactory );
+                    parser = new Parser( CurrentNode, NodesCreation.NodesFactory );
                 bool res = parser.ReceiveChar( ch );
             }
                 
@@ -47,7 +65,7 @@ namespace TaskNode.Parsers
                 if ( ch == '"' )
                 {
                     quoteMode = false;
-                    currentNode.Value = nodeValue;
+                    CurrentNode.Value = nodeValue;
                     return false;
                 }
                 else
@@ -61,17 +79,17 @@ namespace TaskNode.Parsers
                 if (ch == '{')
                 {
 
-                    currentNode.AddChild( nodesFactory.CreateNode() );
-                    currentNode = currentNode.ChildList.Last();
+                    CurrentNode.AddChild( NodesCreation.NodesFactory.CreateNode() );
+                    CurrentNode = CurrentNode.ChildList.Last();
                     ObjectMode = true;
                     return true;
                 }
                 if ( ch == '}' )
                 {
-                    if ( currentNode.Parent == null )
+                    if ( CurrentNode.Parent == null )
                         throw new Exception("лишняя закрывающая скобка");
                     //treeNode = nodesFactory.CreateNode();
-                    currentNode = currentNode.Parent;
+                    CurrentNode = CurrentNode.Parent;
                     ObjectMode = false;
 
                     return false;
@@ -88,6 +106,16 @@ namespace TaskNode.Parsers
            //if ( !quoteMode 
 
             return true;
+        }
+
+        private bool CheckFirstEmptyChar(char ch)
+        {
+            return char.IsWhiteSpace(ch) || char.IsControl(ch);
+        }
+
+        private IValueParser GetParser(char ch)
+        {
+            return ValueParsers.FirstOrDefault(valueParser => valueParser.IsAcceptedFirstChar(ch));
         }
     }
 }
